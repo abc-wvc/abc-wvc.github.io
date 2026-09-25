@@ -1,0 +1,6 @@
+[
+  { "title": "Club website", "summary": "Who we are, how to join, and the officers' tools.", "link": "https://abc-wvc.pages.dev" },
+  { "title": "ABC_Meeting_Time", "summary": "Find a time that works for everyone.", "link": "https://abc-wvc.pages.dev/meeting-time" },
+  { "title": "Campus map", "summary": "A live map of the West Valley campus.", "link": "https://f1l1y.github.io/wvc-campus-map/" },
+  { "title": "ABCD", "summary": "The bot that helps run our Discord. Open code.", "link": "https://github.com/F1l1Y/abcd" }
+]

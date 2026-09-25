@@ -1,0 +1,16 @@
+{
+  "name": "Your name, the way you want the public to see it",
+  "major": "Your major (optional)",
+  "about": "One or two sentences about you (optional).",
+  "github": "your-github-username",
+  "projects": [
+    {
+      "title": "What you built",
+      "summary": "One or two sentences: what it does and what you made it with.",
+      "link": "https://example.com/where-people-can-try-it",
+      "code": "https://github.com/your-github-username/your-project",
+      "image": "screenshot.png",
+      "tags": ["agents", "python"]
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "name": "abc-wvc-showcase",
+  "private": true,
+  "type": "module",
+  "description": "The AI Builders Club member projects showcase, published at https://abc-wvc.github.io",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "check": "node scripts/build.mjs --check",
+    "test": "node --test test/*.test.js"
+  }
+}
