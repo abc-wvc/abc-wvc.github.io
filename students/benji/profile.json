@@ -15,17 +15,6 @@
       ]
     },
     {
-      "title": "Campus map",
-      "summary": "Type a room code and the map takes you there, plus restrooms, AEDs, evacuation routes and parking. Nothing is placed by eye. Built with Claude Code.",
-      "link": "https://f1l1y.github.io/wvc-campus-map/",
-      "code": "https://github.com/F1l1Y/wvc-campus-map",
-      "image": "campus-map.jpg",
-      "tags": [
-        "maps",
-        "javascript"
-      ]
-    },
-    {
       "title": "Neural barcode",
       "summary": "Every digit our 1,482-number network never saw, as one strip of its hidden neurons firing. Draw a digit and watch its column land. Built with Claude Code.",
       "link": "https://f1l1y.github.io/abc-neural-demos/",
