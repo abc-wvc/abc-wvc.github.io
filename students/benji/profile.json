@@ -34,6 +34,17 @@
         "neural networks",
         "teaching"
       ]
+    },
+    {
+      "title": "Flyer art from our network",
+      "summary": "Our flyer and banner backgrounds are drawn from the digit network's real weights. The picture is its animation: a real handwritten 2 passing through. Built with Claude Code.",
+      "link": "https://github.com/F1l1Y/abc-neural-demos#what-the-club-made-from-it",
+      "code": "https://github.com/F1l1Y/abc-neural-demos/blob/main/scene.py",
+      "image": "network-art.jpg",
+      "tags": [
+        "neural networks",
+        "design"
+      ]
     }
   ]
 }
