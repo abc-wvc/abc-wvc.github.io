@@ -1,0 +1,50 @@
+{
+  "name": "Benji S.",
+  "about": "I run the AI Builders Club. I write what we should build, direct the AI that builds it, and playtest everything.",
+  "github": "F1l1Y",
+  "projects": [
+    {
+      "title": "Hop Bot",
+      "summary": "A robot sky-hopping game for our Club Rush table: solo, race Byte the AI, or two players. Party Mode races a whole room on their phones. Built with Claude.",
+      "link": "https://abc-wvc.github.io/hop-bot/",
+      "code": "https://github.com/abc-wvc/hop-bot",
+      "image": "hop-bot.jpg",
+      "tags": [
+        "game",
+        "javascript"
+      ]
+    },
+    {
+      "title": "Campus map",
+      "summary": "Type a room code and the map takes you there, plus restrooms, AEDs, evacuation routes and parking. Nothing is placed by eye. Built with Claude Code.",
+      "link": "https://f1l1y.github.io/wvc-campus-map/",
+      "code": "https://github.com/F1l1Y/wvc-campus-map",
+      "image": "campus-map.jpg",
+      "tags": [
+        "maps",
+        "javascript"
+      ]
+    },
+    {
+      "title": "Neural barcode",
+      "summary": "Every digit our 1,482-number network never saw, as one strip of its hidden neurons firing. Draw a digit and watch its column land. Built with Claude Code.",
+      "link": "https://f1l1y.github.io/abc-neural-demos/",
+      "code": "https://github.com/F1l1Y/abc-neural-demos",
+      "image": "neural-barcode.jpg",
+      "tags": [
+        "neural networks",
+        "visualization"
+      ]
+    },
+    {
+      "title": "Teach It",
+      "summary": "Paint two groups of dots and watch a small neural network learn to separate them, live in your browser. Built with Claude Code.",
+      "link": "https://f1l1y.github.io/abc-neural-demos/teach-it.html",
+      "code": "https://github.com/F1l1Y/abc-neural-demos",
+      "tags": [
+        "neural networks",
+        "teaching"
+      ]
+    }
+  ]
+}
