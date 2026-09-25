@@ -10,22 +10,24 @@ club's main website is https://abc-wvc.pages.dev.
 
 You can do all of this on github.com. No install, no git commands. About ten minutes.
 
-1. Sign in to GitHub. A free account is fine.
+1. Sign in to GitHub. A free account is fine. The buttons below only show up once you are signed in.
 2. Open [`students/_template/profile.json`](students/_template/profile.json) and copy everything in it.
-3. Go back to the top of this repository and choose **Add file**, then **Create new file**.
+3. Go back to the top of this repository. Choose the **+** button (on some screens it says
+   **Add file**), then **Create new file**.
 4. For the name, type `students/your-handle/profile.json`. Your handle is lowercase letters, numbers
    and dashes, like `ada-l`. Paste what you copied. GitHub offers to make your own copy (a fork) of
    this repository first; say yes.
 5. Fill it in (the fields are explained below). Delete the lines you do not need.
-6. Optional: add a screenshot with **Add file**, **Upload files**, into `students/your-handle/images/`
-   (PNG, JPG or WebP, under 500 KB). Optional: a `README.md` in your folder with the longer story;
-   copy the one in `students/_template/`.
-7. Choose **Propose changes**, then **Create pull request**. An automatic check runs in a minute and
-   tells you exactly what to fix, if anything. An officer then reviews and merges it, and the site
-   updates a few minutes later.
+6. Optional: add a screenshot. Choose the **+** button (**Add file**), then **Upload files**, and put
+   it in `students/your-handle/images/` (PNG, JPG or WebP, under 500 KB). Optional: a `README.md` in
+   your folder with the longer story; copy the one in `students/_template/`.
+7. Choose the green button. It says **Commit changes** or **Propose changes**. Keep choosing the
+   green button until you see **Create pull request**, then choose that. An automatic check runs in
+   a minute and tells you exactly what to fix, if anything. An officer then reviews and merges it,
+   and the site updates a few minutes later.
 
-To change your folder later, open your `profile.json` on GitHub and choose the pencil. To take it
-down, open a pull request that deletes your folder, or ask an officer.
+To change your folder later, open your `profile.json` on GitHub and choose the pencil icon. To take
+it down, open a pull request that deletes your folder, or ask an officer.
 
 ## The rules
 
@@ -74,5 +76,7 @@ it with `code`. This folder is the introduction; the repository is the project.
 `scripts/build.mjs` checks every folder in `students/` (skipping `_template`) and writes one static
 page into `dist/`. A folder with any problem stops the build, so nothing is half published. The
 page runs no scripts, escapes everything a student writes, only shows images stored here, and
-carries a strict content security policy. GitHub Actions runs the check and tests on every pull
+carries a strict content security policy. Links to other websites open in a new tab, with a small
+arrow and a hidden "(opens in a new tab)" for screen readers; links inside abc-wvc.github.io stay in
+the same tab. GitHub Actions runs the check and tests on every pull
 request and publishes to GitHub Pages on every merge to `main` (`.github/workflows/showcase.yml`).

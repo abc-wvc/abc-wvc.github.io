@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import { mkdtemp, mkdir, writeFile, symlink, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { validateProfile, validateClub, readStudents, renderPage, escapeHtml, LIMITS } from '../scripts/build.mjs';
+import { validateProfile, validateClub, readStudents, renderPage, escapeHtml, opensNewTab, LIMITS } from '../scripts/build.mjs';
 
 const good = (over = {}, project = {}) => ({
   name: 'Ada L.',
@@ -86,10 +86,41 @@ test('the page escapes everything a student writes and runs no scripts', () => {
   assert.equal(escapeHtml(`<a href="x">'&'</a>`), '&lt;a href=&quot;x&quot;&gt;&#39;&amp;&#39;&lt;/a&gt;');
 });
 
+test('links to other websites open in a new tab and say so; links on this site do not', () => {
+  assert.equal(opensNewTab('https://github.com/abc-wvc'), true);
+  assert.equal(opensNewTab('https://abc-wvc.pages.dev/join'), true);
+  assert.equal(opensNewTab('https://f1l1y.github.io/abc-neural-demos/teach-it.html'), true, 'another github.io site');
+  assert.equal(opensNewTab('https://abc-wvc.github.io/hop-bot/'), false);
+  assert.equal(opensNewTab('./'), false);
+  const r = validateProfile('ada-l', good({}, { link: 'https://abc-wvc.github.io/syllabus-bot/' }));
+  const club = validateClub([{ title: 'Club website', summary: 'Who we are.', link: 'https://abc-wvc.pages.dev' }]).value;
+  for (const html of [renderPage([r.value], club), renderPage([], club)]) {
+    const links = [...html.matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a>/g)];
+    assert.ok(links.length >= 10, `found ${links.length} links`);
+    let away = 0;
+    for (const [, attrs, inner] of links) {
+      const href = attrs.match(/href="([^"]*)"/)[1].replace(/&amp;/g, '&');
+      if (opensNewTab(href)) {
+        away += 1;
+        assert.match(attrs, / target="_blank" rel="noopener noreferrer"/, href);
+        assert.match(inner, /<svg class="ext"[^>]* aria-hidden="true"/, `${href} shows the arrow`);
+        assert.match(inner, /<span class="sr-only"> \(opens in a new tab\)<\/span>/, `${href} has the hint`);
+      } else {
+        assert.doesNotMatch(attrs, /target=/, href);
+        assert.doesNotMatch(inner, /opens in a new tab/, href);
+      }
+    }
+    assert.ok(away >= 9, `${away} links open a new tab`);
+  }
+  const page = renderPage([r.value], club);
+  assert.match(page, /<a href="https:\/\/abc-wvc\.github\.io\/syllabus-bot\/">Syllabus bot<\/a>/, 'a project on this site stays in the tab');
+  assert.match(page, /<span>Add your <span class="nowrap">project<svg/, 'the button keeps its spaces and the arrow sticks to the last word');
+});
+
 test('no students yet shows the invitation', () => {
   const html = renderPage([], validateClub([{ title: 'Club website', link: 'https://abc-wvc.pages.dev' }]).value);
   assert.match(html, /No member projects yet/);
-  assert.match(html, /Add your project/);
+  assert.match(html.replace(/<[^>]+>/g, ''), /Add your project \(opens in a new tab\)/, 'read as text, without the tags');
 });
 
 test('reading folders: template skipped, tricks refused, real images accepted', async () => {

@@ -19,6 +19,11 @@ body { margin: 0 auto; max-width: 1180px; padding: 0 max(16px, env(safe-area-ins
   color: var(--text); font: 15px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
 a { color: var(--accent); }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* Links to other websites open in a new tab: a small arrow for eyes, a hidden hint for screen readers. */
+.nowrap { white-space: nowrap; }
+.ext { display: inline-block; width: 0.8em; height: 0.8em; margin-left: 0.25em; vertical-align: -0.02em; opacity: 0.8; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0);
+  white-space: nowrap; border: 0; }
 h1, h2, h3, h4 { line-height: 1.2; margin: 0 0 8px; }
 h2 { font-size: 20px; margin-top: 36px; }
 

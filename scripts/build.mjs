@@ -9,6 +9,7 @@ import { fileURLToPath } from 'node:url';
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 export const REPO = 'https://github.com/abc-wvc/abc-wvc.github.io';
 export const SITE = 'https://abc-wvc.pages.dev';
+export const SHOWCASE = 'https://abc-wvc.github.io';
 
 export const LIMITS = {
   name: 40, major: 60, about: 280, title: 60, summary: 200, url: 300,
@@ -241,14 +242,42 @@ export function validateClub(raw) {
   return errors.length ? { ok: false, errors } : { ok: true, value };
 }
 
+// Links to other websites open in a new tab, marked with a small arrow and a hint for screen
+// readers. Links inside abc-wvc.github.io (this page, Hop Bot) stay in the same tab.
+export function opensNewTab(href) {
+  try {
+    return new URL(href, `${SHOWCASE}/`).origin !== SHOWCASE;
+  } catch {
+    return true;
+  }
+}
+const NEW_TAB = ' target="_blank" rel="noopener noreferrer"';
+const ARROW = '<svg class="ext" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path d="M5 4.5h6.5V11M11.5 4.5 4.5 11.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const HINT = '<span class="sr-only"> (opens in a new tab)</span>';
+
+// label is HTML that is already escaped. The arrow sticks to the last word so it never wraps alone,
+// and the words stay in one span so a flex button keeps the spaces between them.
+function newTabLabel(label) {
+  const i = label.lastIndexOf(' ');
+  return `<span>${label.slice(0, i + 1)}<span class="nowrap">${label.slice(i + 1)}${ARROW}</span></span>${HINT}`;
+}
+
+// href is a raw link; label is escaped HTML.
+function linkTo(href, label, className = '') {
+  const cls = className ? ` class="${className}"` : '';
+  return opensNewTab(href)
+    ? `<a${cls} href="${escapeHtml(href)}"${NEW_TAB}>${newTabLabel(label)}</a>`
+    : `<a${cls} href="${escapeHtml(href)}">${label}</a>`;
+}
+
 function card(s) {
   const e = escapeHtml;
-  const meta = [s.major ? e(s.major) : '', s.github ? `<a href="https://github.com/${e(s.github)}">@${e(s.github)}</a>` : '']
+  const meta = [s.major ? e(s.major) : '', s.github ? linkTo(`https://github.com/${s.github}`, `@${e(s.github)}`) : '']
     .filter(Boolean).join(' <span aria-hidden="true">&middot;</span> ');
   const projects = s.projects.map((p) => {
-    const title = p.link ? `<a href="${e(p.link)}">${e(p.title)}</a>` : e(p.title);
+    const title = p.link ? linkTo(p.link, e(p.title)) : e(p.title);
     return `<li class="project">${p.image ? `<img src="students/${e(s.handle)}/images/${e(p.image)}" alt="${e(p.title)}" loading="lazy">` : ''}
-          <h4>${title}</h4>${p.summary ? `\n          <p>${e(p.summary)}</p>` : ''}${p.tags.length ? `\n          <p class="tags">${p.tags.map((t) => `<span>${e(t)}</span>`).join('')}</p>` : ''}${p.code ? `\n          <p class="code"><a href="${e(p.code)}">Code</a></p>` : ''}
+          <h4>${title}</h4>${p.summary ? `\n          <p>${e(p.summary)}</p>` : ''}${p.tags.length ? `\n          <p class="tags">${p.tags.map((t) => `<span>${e(t)}</span>`).join('')}</p>` : ''}${p.code ? `\n          <p class="code">${linkTo(p.code, 'Code')}</p>` : ''}
         </li>`;
   }).join('\n        ');
   return `<article class="student" id="${e(s.handle)}">
@@ -256,19 +285,22 @@ function card(s) {
       <ul class="projects">
         ${projects}
       </ul>
-      <p class="folder"><a href="${REPO}/tree/main/students/${e(s.handle)}">${e(s.name.split(' ')[0])}'s folder on GitHub</a></p>
+      <p class="folder">${linkTo(`${REPO}/tree/main/students/${s.handle}`, `${e(s.name.split(' ')[0])}&#39;s folder on GitHub`)}</p>
     </article>`;
 }
 
 export function renderPage(students, club) {
   const e = escapeHtml;
-  const clubTiles = club.map((p) => `<a class="tile" href="${e(p.link)}"><span class="tile-title">${e(p.title)}</span>${p.summary ? `<span class="tile-body">${e(p.summary)}</span>` : ''}</a>`).join('\n        ');
+  const clubTiles = club.map((p) => {
+    const away = opensNewTab(p.link);
+    return `<a class="tile" href="${e(p.link)}"${away ? NEW_TAB : ''}><span class="tile-title">${away ? newTabLabel(e(p.title)) : e(p.title)}</span>${p.summary ? `<span class="tile-body">${e(p.summary)}</span>` : ''}</a>`;
+  }).join('\n        ');
   const members = students.length
     ? `<div class="students">\n    ${students.map(card).join('\n    ')}\n    </div>`
     : `<div class="empty">
         <h3>No member projects yet</h3>
         <p>Be the first: add a folder with your name and what you built. It takes about ten minutes on github.com, no install needed.</p>
-        <p><a class="btn primary" href="${REPO}#add-your-project">Add your project</a></p>
+        <p>${linkTo(`${REPO}#add-your-project`, 'Add your project', 'btn primary')}</p>
       </div>`;
   return `<!doctype html>
 <html lang="en">
@@ -281,7 +313,7 @@ export function renderPage(students, club) {
   <meta name="description" content="What members of the AI Builders Club at West Valley College are building.">
   <meta property="og:title" content="Member projects | AI Builders Club">
   <meta property="og:description" content="What members of the AI Builders Club at West Valley College are building.">
-  <meta property="og:image" content="https://abc-wvc.github.io/og.png">
+  <meta property="og:image" content="${SHOWCASE}/og.png">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="color-scheme" content="dark light">
   <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
@@ -289,15 +321,15 @@ export function renderPage(students, club) {
 </head>
 <body>
   <header class="site-header">
-    <a class="brand" href="${SITE}"><img src="emblem-64.png" alt="" width="32" height="32"><span class="wordmark">AI Builders Club</span></a>
-    <nav class="tabs" aria-label="Club"><a href="${SITE}">Club website</a><a href="${SITE}/join">Join</a></nav>
+    <a class="brand" href="./"><img src="emblem-64.png" alt="" width="32" height="32"><span class="wordmark">AI Builders Club</span></a>
+    <nav class="tabs" aria-label="Club">${linkTo(SITE, 'Club website')}${linkTo(`${SITE}/join`, 'Join')}</nav>
   </header>
   <main>
     <section class="hero">
       <p class="kicker">West Valley College</p>
       <h1>Member projects</h1>
       <p class="lede">What members of the AI Builders Club are building. Every folder here was added by the student who made it.</p>
-      <p class="cta"><a class="btn primary" href="${REPO}#add-your-project">Add your project</a> <a class="btn" href="${SITE}/join">Join the club</a></p>
+      <p class="cta">${linkTo(`${REPO}#add-your-project`, 'Add your project', 'btn primary')} ${linkTo(`${SITE}/join`, 'Join the club', 'btn')}</p>
     </section>
 
     <section aria-labelledby="h-members">
@@ -313,7 +345,11 @@ export function renderPage(students, club) {
     </section>
   </main>
   <footer class="site-footer">
-    <p><a href="${SITE}">Club website</a> <a href="https://linktr.ee/abc.wvc.club">Linktree</a> <a href="https://discord.gg/h99K887zd4">Discord</a> <a href="https://www.instagram.com/abc.wvc/">Instagram</a> <a href="https://www.tiktok.com/@abc.wvc">TikTok</a> <a href="https://www.youtube.com/@abc-wvc">YouTube</a> <a href="${REPO}">This page on GitHub</a></p>
+    <p>${[
+    [SITE, 'Club website'], ['https://linktr.ee/abc.wvc.club', 'Linktree'], ['https://discord.gg/h99K887zd4', 'Discord'],
+    ['https://www.instagram.com/abc.wvc/', 'Instagram'], ['https://www.tiktok.com/@abc.wvc', 'TikTok'],
+    ['https://www.youtube.com/@abc-wvc', 'YouTube'], [REPO, 'This page on GitHub'],
+  ].map(([href, label]) => linkTo(href, label)).join(' ')}</p>
     <p>AI Builders Club, a registered student club at West Valley College. Each student owns what is in their folder.</p>
   </footer>
 </body>
