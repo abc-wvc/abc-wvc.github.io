@@ -313,7 +313,7 @@ export function renderPage(students, club) {
     </section>
   </main>
   <footer class="site-footer">
-    <p><a href="${SITE}">Club website</a> <a href="https://discord.gg/h99K887zd4">Discord</a> <a href="https://www.instagram.com/abc.wvc/">Instagram</a> <a href="${REPO}">This page on GitHub</a></p>
+    <p><a href="${SITE}">Club website</a> <a href="https://linktr.ee/abc.wvc.club">Linktree</a> <a href="https://discord.gg/h99K887zd4">Discord</a> <a href="https://www.instagram.com/abc.wvc/">Instagram</a> <a href="https://www.tiktok.com/@abc.wvc">TikTok</a> <a href="https://www.youtube.com/@abc-wvc">YouTube</a> <a href="${REPO}">This page on GitHub</a></p>
     <p>AI Builders Club, a registered student club at West Valley College. Each student owns what is in their folder.</p>
   </footer>
 </body>
