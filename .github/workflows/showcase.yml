@@ -10,10 +10,6 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  group: pages
-  cancel-in-progress: false
-
 jobs:
   check:
     runs-on: ubuntu-latest
@@ -36,6 +32,11 @@ jobs:
   deploy:
     if: github.event_name != 'pull_request'
     needs: check
+    # Only publishing waits in line. Pull request checks never share this line, so several students
+    # opening pull requests at once never cancel each other's checks.
+    concurrency:
+      group: pages
+      cancel-in-progress: false
     runs-on: ubuntu-latest
     permissions:
       pages: write
