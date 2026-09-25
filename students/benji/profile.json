@@ -16,10 +16,9 @@
     },
     {
       "title": "Teach It",
-      "summary": "Train a tiny neural network by painting dots, then draw a digit and watch the club's network read it, see inside it, and explore the 1,797 digits it was tested on. Built with Claude Code.",
+      "summary": "Paint two groups of dots and watch a small neural network learn to separate them, live in your browser. Built with Claude Code.",
       "link": "https://f1l1y.github.io/abc-neural-demos/teach-it.html",
       "code": "https://github.com/F1l1Y/abc-neural-demos",
-      "image": "network-art.jpg",
       "tags": [
         "neural networks",
         "teaching"

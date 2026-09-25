@@ -21,6 +21,8 @@ a { color: var(--accent); }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 /* Links to other websites open in a new tab: a small arrow for eyes, a hidden hint for screen readers. */
 .nowrap { white-space: nowrap; }
+/* A long word a student writes (a title, a handle, a first name) breaks instead of pushing the page sideways. */
+.student, .tile { overflow-wrap: anywhere; }
 .ext { display: inline-block; width: 0.8em; height: 0.8em; margin-left: 0.25em; vertical-align: -0.02em; opacity: 0.8; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0);
   white-space: nowrap; border: 0; }

@@ -255,27 +255,30 @@ const NEW_TAB = ' target="_blank" rel="noopener noreferrer"';
 const ARROW = '<svg class="ext" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><path d="M5 4.5h6.5V11M11.5 4.5 4.5 11.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 const HINT = '<span class="sr-only"> (opens in a new tab)</span>';
 
-// label is HTML that is already escaped. The arrow sticks to the last word so it never wraps alone,
-// and the words stay in one span so a flex button keeps the spaces between them.
+// label is plain text; this escapes it. The arrow sticks to the last letter only, so it never wraps
+// alone and a long word can still break on a phone. The words stay in one span so a flex button keeps
+// the spaces between them.
+const LETTERS = new Intl.Segmenter('en', { granularity: 'grapheme' });
 function newTabLabel(label) {
-  const i = label.lastIndexOf(' ');
-  return `<span>${label.slice(0, i + 1)}<span class="nowrap">${label.slice(i + 1)}${ARROW}</span></span>${HINT}`;
+  const letters = [...LETTERS.segment(label)].map((g) => g.segment);
+  const last = letters.pop() ?? '';
+  return `<span>${escapeHtml(letters.join(''))}<span class="nowrap">${escapeHtml(last)}${ARROW}</span></span>${HINT}`;
 }
 
-// href is a raw link; label is escaped HTML.
+// href is a raw link; label is plain text.
 function linkTo(href, label, className = '') {
   const cls = className ? ` class="${className}"` : '';
   return opensNewTab(href)
     ? `<a${cls} href="${escapeHtml(href)}"${NEW_TAB}>${newTabLabel(label)}</a>`
-    : `<a${cls} href="${escapeHtml(href)}">${label}</a>`;
+    : `<a${cls} href="${escapeHtml(href)}">${escapeHtml(label)}</a>`;
 }
 
 function card(s) {
   const e = escapeHtml;
-  const meta = [s.major ? e(s.major) : '', s.github ? linkTo(`https://github.com/${s.github}`, `@${e(s.github)}`) : '']
+  const meta = [s.major ? e(s.major) : '', s.github ? linkTo(`https://github.com/${s.github}`, `@${s.github}`) : '']
     .filter(Boolean).join(' <span aria-hidden="true">&middot;</span> ');
   const projects = s.projects.map((p) => {
-    const title = p.link ? linkTo(p.link, e(p.title)) : e(p.title);
+    const title = p.link ? linkTo(p.link, p.title) : e(p.title);
     return `<li class="project">${p.image ? `<img src="students/${e(s.handle)}/images/${e(p.image)}" alt="${e(p.title)}" loading="lazy">` : ''}
           <h4>${title}</h4>${p.summary ? `\n          <p>${e(p.summary)}</p>` : ''}${p.tags.length ? `\n          <p class="tags">${p.tags.map((t) => `<span>${e(t)}</span>`).join('')}</p>` : ''}${p.code ? `\n          <p class="code">${linkTo(p.code, 'Code')}</p>` : ''}
         </li>`;
@@ -285,7 +288,7 @@ function card(s) {
       <ul class="projects">
         ${projects}
       </ul>
-      <p class="folder">${linkTo(`${REPO}/tree/main/students/${s.handle}`, `${e(s.name.split(' ')[0])}&#39;s folder on GitHub`)}</p>
+      <p class="folder">${linkTo(`${REPO}/tree/main/students/${s.handle}`, `${s.name.split(' ')[0]}'s folder on GitHub`)}</p>
     </article>`;
 }
 
@@ -293,7 +296,7 @@ export function renderPage(students, club) {
   const e = escapeHtml;
   const clubTiles = club.map((p) => {
     const away = opensNewTab(p.link);
-    return `<a class="tile" href="${e(p.link)}"${away ? NEW_TAB : ''}><span class="tile-title">${away ? newTabLabel(e(p.title)) : e(p.title)}</span>${p.summary ? `<span class="tile-body">${e(p.summary)}</span>` : ''}</a>`;
+    return `<a class="tile" href="${e(p.link)}"${away ? NEW_TAB : ''}><span class="tile-title">${away ? newTabLabel(p.title) : e(p.title)}</span>${p.summary ? `<span class="tile-body">${e(p.summary)}</span>` : ''}</a>`;
   }).join('\n        ');
   const members = students.length
     ? `<div class="students">\n    ${students.map(card).join('\n    ')}\n    </div>`

@@ -114,7 +114,22 @@ test('links to other websites open in a new tab and say so; links on this site d
   }
   const page = renderPage([r.value], club);
   assert.match(page, /<a href="https:\/\/abc-wvc\.github\.io\/syllabus-bot\/">Syllabus bot<\/a>/, 'a project on this site stays in the tab');
-  assert.match(page, /<span>Add your <span class="nowrap">project<svg/, 'the button keeps its spaces and the arrow sticks to the last word');
+  assert.match(page, /<span>Add your projec<span class="nowrap">t<svg/, 'the button keeps its spaces and the arrow sticks to the last letter');
+  assert.match(page, /<span>Ada&#39;s folder on GitHu<span class="nowrap">b<svg/, 'the label is escaped once');
+});
+
+test('only the last letter is glued to the arrow, so a long word can still break', () => {
+  const long = 'A'.repeat(LIMITS.title);
+  const r = validateProfile('ada-l', good({ github: 'a'.repeat(39) }, { title: long, link: 'https://example.com/x' }));
+  assert.ok(r.ok, r.errors);
+  const club = validateClub([{ title: 'Bot cafe\u0301', link: 'https://abc-wvc.pages.dev' }, { title: 'Flag \u{1F1FA}\u{1F1F8}', link: 'https://abc-wvc.pages.dev' }]).value;
+  const page = renderPage([r.value], club);
+  const glued = [...page.matchAll(/<span class="nowrap">(.*?)<svg/g)].map((m) => m[1]);
+  assert.ok(glued.length >= 10, `${glued.length} arrows`);
+  for (const g of glued) assert.equal([...new Intl.Segmenter('en', { granularity: 'grapheme' }).segment(g.replace(/&#39;/g, "'"))].length, 1, `"${g}" is one letter`);
+  assert.ok(glued.includes('\u{1F1FA}\u{1F1F8}'), 'a flag made of two code points stays whole');
+  assert.ok(glued.includes('e\u0301'), 'a letter with an accent mark stays whole');
+  assert.match(page, new RegExp(`<span>${'A'.repeat(LIMITS.title - 1)}<span class="nowrap">A<svg`));
 });
 
 test('no students yet shows the invitation', () => {
